@@ -470,7 +470,7 @@ subjects:
 </li>
 </ul>
 <h3 id="1-apply-the-compliance">1. Apply the Compliance</h3>
-<p>Now that we have installed MCM in both clusters, let's create the <strong>Compliance</strong>, <strong>Placement Policy</strong>, and <strong>Placement Binding</strong> objects located at <a href="https://github.com/ibm-cloud-architecture/kubernetes-multicloud-management/tree/master/cookbook/docs/demos/compliance">cookbook/docs/demos/compliance</a>. Here is a high level breakdown of the contents of the <code>Compliance</code> object:</p>
+<p>Now that we have installed MCM in both clusters, let's create the <strong>Compliance</strong>, <strong>Placement Policy</strong>, and <strong>Placement Binding</strong> objects located at <a href="https://github.com/ibm-cloud-architecture/kubernetes-multicloud-management/tree/master/demos/compliance">demos/compliance</a>. Here is a high level breakdown of the contents of the <code>Compliance</code> object:</p>
 <ul>
 <li>A <strong>Policy</strong> that <code>enforces</code> the creation of the policy's <strong>RoleTemplate</strong> if the cluster is found non-compliant.<ul>
 <li>This means that even if the cluster was found compliant and, for some reason, a cluster admin deletes the role, the Compliance Manager will recreate it.</li>
@@ -488,7 +488,7 @@ git clone git@github.com:ibm-cloud-architecture/kubernetes-multicloud-management
 cd kubernetes-multicloud-management
 
 # Apply the Compliance
-kubectl apply -f cookbook/docs/demos/compliance
+kubectl apply -f demos/compliance
 </code></pre>
 
 <p>Where:</p>

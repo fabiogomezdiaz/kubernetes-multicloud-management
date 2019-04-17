@@ -94,6 +94,8 @@
         
             <li><a class="toctree-l3" href="#ibm-cloud-event-management-for-ibm-multicloud-manager">IBM Cloud Event Management for IBM Multicloud Manager</a></li>
         
+            <li><a class="toctree-l3" href="#conclusion">Conclusion</a></li>
+        
         </ul>
     
 
@@ -144,143 +146,194 @@
               
                 <h1 id="ibm-multicloud-manager-monitoring-and-event-management">IBM Multicloud Manager - monitoring and event management</h1>
 <p><strong>Author:</strong> Rafal Szypulka (rafal.szypulka@pl.ibm.com)</p>
-<p>This chapter is focused on monitoring and event management features delivered by IBM Multicloud Manager.</p>
-<p>Check chapter <a href="chapter8_day2operation.md">Day 2 operation with MCM</a> for broader description of Cloud Service Management and Operations aspects.</p>
+<p>This chapter is focused on monitoring and event management features delivered by IBM Multicloud Manager 3.1.2.</p>
 <ul>
-<li><a href="#overall-dashboard">Overall MCM dashboard</a></li>
+<li><a href="#overall-mcm-dashboard">Overall MCM dashboard</a></li>
 <li><a href="#mcm-application-monitoring">MCM Application monitoring</a><ul>
 <li><a href="#metrics-collection-and-visualization">Metrics collection and visualization</a></li>
 </ul>
 </li>
 <li><a href="#ibm-cloud-event-management-for-ibm-multicloud-manager">IBM Cloud Event Management for IBM Multicloud Manager</a><ul>
-<li><a href="#installing-event-management-for-ibm-multicloud-manager">Installing Event Management for IBM Multicloud Manager</a></li>
+<li><a href="#installing-the-cloud-event-management-for-ibm-multicloud-manager">Installing the Cloud Event Management for IBM Multicloud Manager</a><ul>
 <li><a href="#prerequisites">Prerequisites</a></li>
 <li><a href="#installation-of-the-cloud-event-management-controller">Installation of the Cloud Event Management controller</a></li>
 <li><a href="#installation-of-the-cloud-event-management-for-ibm-multicloud-manager">Installation of the Cloud Event Management for IBM Multicloud Manager</a></li>
-<li><a href="#first-logon-to-cem-console">First logon to CEM console</a></li>
-<li><a href="#cloud-event-management-documentation">Cloud Event Management documentation</a></li>
 </ul>
 </li>
+<li><a href="#user-management">User management</a></li>
+<li><a href="#first-logon-to-the-cem-console">First logon to the CEM console</a></li>
+</ul>
+</li>
+<li><a href="#conclusion">Conclusion</a></li>
 </ul>
 <h2 id="overall-mcm-dashboard">Overall MCM dashboard</h2>
-<p>IBM Multicloud Manager Overview dashboard is available from the MCM menu: <code>Overview</code>. It shows general set of metrics collected from managed clusters:</p>
-<ul>
-<li>Cluster Health</li>
-<li>Helm Releases</li>
-<li>Pod Health</li>
-<li>Persistent Volume Health</li>
-<li>CPU Health</li>
-<li>Memory Health</li>
-<li>Storage Capacity</li>
-</ul>
+<p>IBM Multicloud Manager Overview dashboard is available from the <strong>Overview</strong> section in the MCM menu.</p>
 <p><img alt="" src="../images/mcm-monitoring-event-management/mcm-overall.png" /></p>
+<p>You can view details of your IBM Cloud Private clusters and other cloud service providers supported by IBM Cloud Private. You can also view details about your applications. The Overview dashboard is continuously refreshed in real time.</p>
+<p>The following information about clusters is provided:</p>
+<ul>
+<li>Name of the cloud service with the number of clusters</li>
+<li>Cluster compliance</li>
+<li>Pod details</li>
+<li>Cluster status</li>
+<li>Cluster resources (VCPU/Memory usage)</li>
+<li>Storage usage</li>
+</ul>
+<p>You can also view the information about each application and clusters where this application has been deployed:</p>
+<ul>
+<li>Number of clusters</li>
+<li>Number of Kubernetes types</li>
+<li>Number of regions</li>
+<li>Number of nodes</li>
+<li>Number of pods</li>
+</ul>
+<p>The Overview page can be further personalized with the filtering feature. Click <strong>Filter results</strong> menu to specify what information is displayed on your page.</p>
 <h2 id="mcm-application-monitoring">MCM Application monitoring</h2>
 <h3 id="metrics-collection-and-visualization">Metrics collection and visualization</h3>
-<p>Application dashboards are available from the MCM UI: <code>Applications -&gt; Launch Health View</code></p>
+<p>To access an Application Health View Dashboard (shown below), you must first access the <strong>Applications</strong> page from the MCM Menu:</p>
 <p><img alt="" src="../images/mcm-monitoring-event-management/mcm-app-monit.png" /></p>
+<p>Next to each application, under the <strong>DASHBOARD</strong> column, there is a <code>Launch Health View</code> button. If you click it, you will open the Health View Grafana dashboard for that application.</p>
 <p>A Grafana Dashboard for MCM applications is generated automatically for each deployed application and shows metrics related to resource utilization (CPU, memory, network) of the application containers and overall resource utilization of the clusters where an application has been deployed.</p>
 <p><img alt="" src="../images/mcm-monitoring-event-management/mcm-grafana.png" /></p>
-<p>MCM federated Prometheus is a data source for an application monitoring dashboard. MCM Controller installation deploys a federated Prometheus instance which will pull selected metric data from the Prometheus instances located on managed ICP clusters.
-Deployment name: <code>mcm-controller-ibm-mcm-controller-prometheus</code></p>
-<p>Initially, just after MCM installation, the MCM federated Prometheus instance doesn't collect any data. Its configuration is generated dynamically during application deployment via MCM.
-Target ICP clusters are added to the MCM federated Prometheus instance ConfigMap during application deployment.</p>
-<p>The example below, shows a dynamic update of the MCM federated Prometheus ConfigMap after deployment of the application to two ICP clusters:</p>
-<pre><code>   scrape_configs:
-    - job_name: mcm-dynamic-se-prod-31
+<p>MCM federated Prometheus is a data source for an application monitoring dashboard. MCM Controller installation deploys a federated Prometheus instance which will pull selected metric data from the Prometheus instances located on managed ICP clusters.</p>
+<p>The deployment name for the MCM Controller's Federated Prometheus is: <code>mcm-controller-ibm-mcm-prod-prometheus</code></p>
+<p>Initially, just after MCM installation, the MCM federated Prometheus instance doesn't collect any data. Its configuration is generated dynamically during application deployment via MCM. The Target ICP clusters are added to the MCM federated Prometheus instance's ConfigMap during application deployment.</p>
+<p>The example below shows a dynamic update of the MCM federated Prometheus ConfigMap after deployment of the application to three ICP clusters:</p>
+<pre><code class="yaml">    scrape_configs:
+    - job_name: mcm-dynamic-se-prod-312-ubuntu
       honor_labels: true
       params:
         match[]:
         - '{job=&quot;kubernetes-cadvisor&quot;}'
       scrape_interval: 1m
       scrape_timeout: 30s
-      metrics_path: /federate
+      metrics_path: /apis/mcm.ibm.com/v1alpha1/namespaces/se-prod-312-ubuntu/clusterstatuses/se-prod-312-ubuntu/monitor/federate
       scheme: https
       static_configs:
       - targets:
-        - se-prod-31.prometheus.icp:443
+        - kubernetes.default:443
         labels:
-          cluster_name: se-prod-31
+          cluster_name: se-prod-312-ubuntu
+      bearer_token_file: /var/run/secrets/kubernetes.io/serviceaccount/token
       tls_config:
-        cert_file: /prometheus/hcm/mcm-dynamic-se-prod-31/tls.crt
-        key_file: /prometheus/hcm/mcm-dynamic-se-prod-31/tls.key
-        insecure_skip_verify: true
-    - job_name: mcm-dynamic-se-stg
+        ca_file: /var/run/secrets/kubernetes.io/serviceaccount/ca.crt
+        insecure_skip_verify: false
+    - job_name: mcm-dynamic-se-stg-312-ubuntu
       honor_labels: true
       params:
         match[]:
         - '{job=&quot;kubernetes-cadvisor&quot;}'
       scrape_interval: 1m
       scrape_timeout: 30s
-      metrics_path: /federate
+      metrics_path: /apis/mcm.ibm.com/v1alpha1/namespaces/se-stg-312-ubuntu/clusterstatuses/se-stg-312-ubuntu/monitor/federate
       scheme: https
       static_configs:
       - targets:
-        - se-stg.prometheus.icp:443
+        - kubernetes.default:443
         labels:
-          cluster_name: se-stg
+          cluster_name: se-stg-312-ubuntu
+      bearer_token_file: /var/run/secrets/kubernetes.io/serviceaccount/token
       tls_config:
-        cert_file: /prometheus/hcm/mcm-dynamic-se-stg/tls.crt
-        key_file: /prometheus/hcm/mcm-dynamic-se-stg/tls.key
-        insecure_skip_verify: true
+        ca_file: /var/run/secrets/kubernetes.io/serviceaccount/ca.crt
+        insecure_skip_verify: false
+    - job_name: mcm-dynamic-se-dev-312-ubuntu
+      honor_labels: true
+      params:
+        match[]:
+        - '{job=&quot;kubernetes-cadvisor&quot;}'
+      scrape_interval: 1m
+      scrape_timeout: 30s
+      metrics_path: /apis/mcm.ibm.com/v1alpha1/namespaces/se-dev-312-ubuntu/clusterstatuses/se-dev-312-ubuntu/monitor/federate
+      scheme: https
+      static_configs:
+      - targets:
+        - kubernetes.default:443
+        labels:
+          cluster_name: se-dev-312-ubuntu
+      bearer_token_file: /var/run/secrets/kubernetes.io/serviceaccount/token
+      tls_config:
+        ca_file: /var/run/secrets/kubernetes.io/serviceaccount/ca.crt
+        insecure_skip_verify: false
 </code></pre>
 
-<p>The additional configuration instructs MCM federated Prometheus instance to collect selected (cAdvisor) metrics from two child ICP Prometheus instances, located respectively on two ICP clusters: <code>se-prod-31</code> and <code>se-stg</code>.
+<p>In the example above, the generated configuration instructs MCM federated Prometheus instance to collect cAdvisor metrics from three child ICP Prometheus instances, located respectively on three ICP clusters: <code>se-prod-312-ubuntu</code>, <code>se-stg-312-ubuntu</code> and <code>se-dev-312-ubuntu</code>.
 More information about Prometheus federation mechanisms: <a href="https://prometheus.io/docs/prometheus/latest/federation/">https://prometheus.io/docs/prometheus/latest/federation/</a>.</p>
 <h2 id="ibm-cloud-event-management-for-ibm-multicloud-manager">IBM Cloud Event Management for IBM Multicloud Manager</h2>
-<p>IBM Cloud Event Management allows to set up a real-time incident management for the applications and infrastructure managed by the Multi Cloud Manager. Incidents are generated from events/alerts which indicate that something has happened on an application, service, or another monitored object.
+<p>IBM Cloud Event Management (CEM) allows to set up a real-time incident management for the applications and infrastructure managed by the Multi Cloud Manager. Incidents are generated from events/alerts which indicate that something has happened on an application, service, or another monitored object.
 Cloud Event Management can receive events from various monitoring sources, either on premise or in the cloud.</p>
-<p>In the MCM environment, the CEM collects alerts from Prometheus instances located at each managed cluster. CEM for MCM automatically configures managed Prometheus Alertmanager instances to send alert notifications to the central CEM instance installed on MCM Controller.</p>
-<h3 id="installing-event-management-for-ibm-multicloud-manager">Installing Event Management for IBM Multicloud Manager</h3>
-<p>You can download the IBM Cloud Event Management optional component for IBM Multicloud Manager from the IBM Passport Advantage website, then import PPA to the ICP container registry and deploy CEM charts. Install IBM Multicloud Manager on your hub-cluster and IBM Multicloud Manager Klusterlet on all clusters that you want to manage.</p>
-<p>Use the following <a href="https://www.ibm.com/support/knowledgecenter/SSURRN/com.ibm.cem.doc/em_obtain_mcmppa.html">instructions</a> to download and install Cloud Event Management.</p>
-<p>The following procedure describe installation and configuration steps on example ICP 3.1 cluster running MCM controller. The sequence of the steps is important.</p>
-<h4 id="prerequisites">Prerequisites</h4>
+<p>In the MCM environment, the CEM collects alerts from Prometheus instances located at each managed cluster. The Cloud Event Management Controller for MCM (deployed using <code>alerttargetcontroller</code> helm chart) automatically configures managed Prometheus Alertmanager instances to send alert notifications to the central CEM instance installed on MCM Controller.</p>
+<h3 id="installing-the-cloud-event-management-for-ibm-multicloud-manager">Installing the Cloud Event Management for IBM Multicloud Manager</h3>
+<p>The IBM Cloud Event Management for MCM is included inside IBM Multicloud Manager installation package. Unpack the MCM installation archive <code>mcm-3.1.2.tgz</code> and inside you will find two CEM PPA packages:</p>
 <ul>
-<li>MCM Controller and MCM Klusterlet deployed on ICP 3.1 cluster</li>
-<li>CEM PPA packages imported as per <a href="https://www.ibm.com/support/knowledgecenter/SSURRN/com.ibm.cem.doc/em_obtain_mcmppa.html">instructions</a>.</li>
-<li>ICP user has a <code>Cluster administrator</code> role within a Team which has a resource management assigned to a managed cluster namespace.</li>
+<li><strong>Could Event Management Controller</strong> - alerttargetcontroller-ppa-0.0.2.tar.gz</li>
+<li><strong>Cloud Event Management</strong> - cem-mcm-ppa-ibm-cem-2.2.0.tar.gz</li>
 </ul>
-<h4 id="installation-of-the-cloud-event-management-controller">Installation of the Cloud Event Management controller</h4>
-<p>Deploy an alerttargetcontroller chart on MCM Contoller cluster in the <code>kube-system</code> namespace.</p>
-<p><img alt="" src="../images/mcm-monitoring-event-management/alerttarget.png" />
-<code>MCM Fullname Override</code> option can be obtained using:</p>
-<pre><code>kubectl get po -n kube-system|grep klusterlet
+<p>Load both PPA packages to the local container registry on MCM hub cluster and <code>alerttargetcontroller</code> on every managed cluster.</p>
+<pre><code class="bash">docker login &lt;MCM-cluster-hostname&gt;:8500
+cloudctl login -a https://&lt;MCM-cluster-hostname&gt;:8443 --skip-ssl-validation -n kube-system
+cloudctl catalog load-archive -a &lt;ppa-archive&gt; --registry &lt;MCM-cluster-hostname&gt;:8500/kube-system
 </code></pre>
 
-<p>Copy the pod name part before the <code>klusterlet</code> word as on the picture below:</p>
-<p><img alt="" src="../images/mcm-monitoring-event-management/mcm-override.png" /></p>
-<p><code>ICP Cluster namespace</code> is the cluster namespace created during klusteret deployment. In our case the namespace name is <code>mcm-se-dev-31</code>. It can be obtained using:</p>
-<pre><code>kubectl get clusters --all-namespaces
-NAMESPACE             NAME              AGE
-mcm-se-dev-31         se-dev-31         1d
-mcm-se-prod-rhel-31   se-prod-rhel-31   1d
+<p>The following procedure describes installation and configuration steps on example ICP 3.1.2 cluster running MCM controller. The sequence of the steps is important.</p>
+<h4 id="prerequisites">Prerequisites</h4>
+<ul>
+<li>MCM Controller and MCM Klusterlet deployed on MCM hub ICP 3.1.2 cluster and Klusterlet deployed on managed ICP clusters.</li>
+<li>CEM PPA packages imported as per instructions above.</li>
+<li>CEM users have an <code>Administrator</code> role within a Team which has a resource management assigned to a managed cluster namespaces.</li>
+</ul>
+<h4 id="installation-of-the-cloud-event-management-controller">Installation of the Cloud Event Management controller</h4>
+<p>Go to the ICP Catalog and deploy the <code>alerttargetcontroller</code> chart on both MCM hub cluster and managed clusters in the <code>kube-system</code> namespace.</p>
+<p><img alt="" src="../images/mcm-monitoring-event-management/alerttarget1.png" />
+<code>MCM Fullname Override</code> option can be obtained using:</p>
+<pre><code class="bash">kubectl get po -n kube-system | grep klusterlet
+</code></pre>
+
+<p>Copy the pod name part before the <code>klusterlet</code> word (<code>klusterlet-ibm-mcmk-prod</code> on the example below):</p>
+<pre><code class="bash"># kubectl get po | grep klusterlet
+klusterlet-ibm-mcmk-prod-klusterlet-657958f69f-v7cw9              3/3     Running     0          30h
+klusterlet-ibm-mcmk-prod-weave-scope-49sxf                        1/1     Running     0          30h
+</code></pre>
+
+<p><code>ICP Cluster namespace</code> is the cluster namespace created during klusterlet deployment. In our case the namespace name is <code>mcm-se-dev-31</code>. It can be obtained using:</p>
+<pre><code class="bash"># kubectl get clusters --all-namespaces
+NAMESPACE   NAME        ENDPOINTS           STATUS   AGE
+se-stg-31   se-stg-31   172.16.40.68:8001   Ready    1d
+se-dev-31   se-dev-31   172.16.40.98:8001   Ready    1d
 </code></pre>
 
 <p>After chart deployment, make sure the <code>alerttargetcontroller</code> pod is running.</p>
+<pre><code class="bash"># kubectl get pod -n kube-system|grep alerttarget
+atc-alerttargetcontroller-alerttargetcontroller-77f87fb77cx6fph   1/1     Running                 1          10h
+</code></pre>
+
 <h4 id="installation-of-the-cloud-event-management-for-ibm-multicloud-manager">Installation of the Cloud Event Management for IBM Multicloud Manager</h4>
-<p>Deploy <code>ibm-cem</code> chart from the local-chart repo in the <code>kube-system</code> namespace on the MCM Controller cluster.
-<img alt="" src="../images/mcm-monitoring-event-management/cem.png" />
-In our setup we used ICP UI console IP address for both <code>ICP Master IP</code> and <code>Ingress Domain</code> options.</p>
-<p>After deployment, wait a couple of minutes to start all the CEM pods and run the following command to configure OIDC registration with IBM Cloud Private:</p>
-<pre><code>kubectl exec -n kube-system -t `kubectl get pods -l release=cem -n kube-system \
+<p>Deploy <code>ibm-cem</code> chart you loaded together with CEM image to <code>local-charts</code> repository in the <code>kube-system</code> namespace on the MCM hub cluster.</p>
+<ul>
+<li><strong>NOTE</strong>: The CEM chart provided with ICP's built-in <code>ibm-charts</code> repository is a <code>Community Edition</code> version which is not designed to work with MCM.</li>
+</ul>
+<p><img alt="" src="../images/mcm-monitoring-event-management/cem1.png" />
+In our setup we used ICP UI console hostname for both <code>ICP Master IP</code> and <code>Ingress Domain</code> options.</p>
+<p>After deployment, wait a couple of minutes until all CEM pods are started and run the following command to configure OIDC registration with IBM Cloud Private:</p>
+<pre><code class="bash">kubectl exec -n kube-system -t `kubectl get pods -l release=cem -n kube-system \
 | grep &quot;cem-ibm-cem-cem-users&quot; | grep &quot;Running&quot; | head -n 1 \
 | awk '{print $1}'` bash -- &quot;/etc/oidc/oidc_reg.sh&quot; &quot;`echo $(kubectl get secret platform-oidc-credentials -o yaml -n kube-system \
 | grep OAUTH2_CLIENT_REGISTRATION_SECRET: | awk '{print $2}')`&quot;
 </code></pre>
 
-<p>Verify the alerttarget has been created:</p>
-<pre><code>kubectl get alerttarget --all-namespaces
-NAMESPACE    NAME                   AGE
-mcm-se-dev   mcm-se-dev-se-dev-31   1d
+<p>Verify the alerttargets CRD has been created:</p>
+<pre><code class="bash">kubectl get alerttargets --all-namespaces
+NAMESPACE   NAME                  AGE
+se-stg-31   se-stg-31-se-stg-31   2h
+se-dev-31   se-dev-31-se-dev-31   2h
 </code></pre>
 
-<p>At this point the ConfigMaps for managed Prometheus: <code>monitoring-prometheus-alertmanager</code> and <code>monitoring-prometheus-alertrules</code> should be automatically updated by the alerttargetcontroller.
-Verify it using:</p>
-<pre><code>kubectl get cm monitoring-prometheus-alertmanager -n kube-system -o yaml
+<p>At this point the Alertmanager ConfigMaps for Prometheus instances are located on managed clusters: <code>monitoring-prometheus-alertmanager</code> should be automatically updated by the <code>alerttargetcontroller</code>.</p>
+<p>To see the ConfigMap YAML for each managed cluster, run the following command on each managed cluster:</p>
+<pre><code class="bash">kubectl get cm monitoring-prometheus-alertmanager -n kube-system -o yaml
 </code></pre>
 
-<p>in the <code>route:</code> -&gt;  <code>routes:</code> section you should see:</p>
-<pre><code>      - receiver: cemwebhook
+<p>In the <code>route:</code> -&gt; <code>routes:</code> section you should see the following:</p>
+<pre><code class="bash">      - receiver: cemwebhook
         group_by:
         - alertname
         - instance
@@ -291,37 +344,54 @@ Verify it using:</p>
         repeat_interval: 1m
 </code></pre>
 
-<p>and in the <code>receivers:</code> section you should see:</p>
-<pre><code>    - name: cemwebhook
+<p>And in the <code>receivers:</code> section you should see:</p>
+<pre><code class="bash">    - name: cemwebhook
       webhook_configs:
       - send_resolved: true
         http_config:
           tls_config:
             insecure_skip_verify: true
-        url: https://172.16.50.227:8443/norml/webhook/prometheus/se-team/6196999a-6c1c-43de-9769-ef9a5c7b0bad/jWa3zrTOSS_2p0zJYmHKQA3gA5HLADu7X-FgdDt8yz4
-    templates: []
+        url: https://172.16.40.68:8443/norml/webhook/prometheus/cem-1/695c8db7-344c-4af7-84f3-10f99eab440a/Snfok7F3_0ndxxxxxx762ZWnsMmnPtnLG69ID_rzctg
 </code></pre>
 
 <p>Note, the CEM <code>url:</code> will be different in your environment.</p>
-<p>The CEM Alert Target Controller adds a couple of sample alert definitions to the <code>monitoring-prometheus-alertrules</code>  ConfigMap. This can be verified using:</p>
-<pre><code>kubectl edit cm monitoring-prometheus-alertrules -n kube-system
+<p>The <strong>CEM Alert Target Controller</strong> adds a couple of sample alert definitions to the <code>AlertRules</code> CRD. This can be verified using by running the following command:</p>
+<pre><code class="bash">kubectl get alertrules
+NAME                           ENABLED   AGE   CHART                     RELEASE      ERRORS
+cem-alert-rules                true      2h
+(...)
 </code></pre>
 
-<p>These alert rules can be customized to the local requirements. We recommend to add <a href="https://github.com/ibm-cloud-architecture/CSMO-ICP/tree/master/prometheus/alerts_prometheus2.x">best practice alert definitions for ICP platform</a>.</p>
-<p>Check the Prometheus Alertmanager logs to verify if there are no errors during sending webhook notifications to CEM.</p>
-<pre><code>kubectl logs &lt;alertmanager pod&gt; -n kube-system
+<p>These alert rules can be customized based on your requirements. We recommend considering our <a href="https://github.com/ibm-cloud-architecture/CSMO-ICP/tree/master/prometheus/alerts_icp_3.1.2">best practice alert definitions for ICP platform</a>.</p>
+<p>Check the Prometheus Alertmanager logs to verify that there are no errors while sending the webhook notifications to CEM.</p>
+<pre><code class="bash">kubectl logs &lt;alertmanager pod&gt; -n kube-system
 </code></pre>
 
-<h4 id="first-logon-to-cem-console">First logon to CEM console</h4>
-<p>Cloud Event Management console can be accessed from the Multicloud Manager console. Logon to MCM UI as one of the Team (mentioned in the <a href="#prerequisites">prerequisites</a> section) members and select <code>Event Management</code>.</p>
+<h3 id="user-management">User management</h3>
+<p>CEM console access is managed through ICP <code>Teams</code> page in the ICP Console. To create a team with <code>Administrator</code> role, run the following steps:</p>
+<ul>
+<li>On the MCM HUB Cluster, go to <strong>Manage -&gt; Identity &amp; Access</strong>.</li>
+<li>Click on the <strong>Teams</strong> menu.</li>
+<li>Create a Team and call it <code>CEM</code>.</li>
+<li>Click the <strong>Users</strong> tab and assign the <code>Administrator</code> role to the users in the Team.</li>
+<li>Finally, click the <strong>Resources</strong> tab and add a row of type <strong>Namespace</strong> with the namespace name for each managed cluster.</li>
+</ul>
+<p><img alt="" src="../images/mcm-monitoring-event-management/cem-team.png" /></p>
+<h3 id="first-logon-to-the-cem-console">First logon to the CEM console</h3>
+<p>Cloud Event Management console can be accessed from the Multicloud Manager console. Logon to MCM UI as one of the Team members (mentioned in the <a href="#user-management">User Management</a> section) and select <code>Event Management</code>.</p>
 <p><img alt="" src="../images/mcm-monitoring-event-management/cem-login.png" /></p>
 <p>You may be asked to authenticate again with the ICP user and you should see one or more subscriptions.</p>
-<p><img alt="" src="../images/mcm-monitoring-event-management/cem-subs.png" /></p>
-<p>Example subscription <code>se-team</code> on the picture above is a name of the ICP team authorised to manage a cluster namespace.</p>
-<p>Click <code>Launch</code> and if some defined Prometheus alerts are active (you can verify it in the ICP console <code>Platform -&gt; Alerting</code>), you should see incidents in CEM UI:</p>
-<p><img alt="" src="../images/mcm-monitoring-event-management/cem-incidents.png" /></p>
-<h4 id="cloud-event-management-documentation">Cloud Event Management documentation</h4>
-<p>More information about how to operate and use the Cloud Event Management: <a href="https://www.ibm.com/support/knowledgecenter/SSURRN/com.ibm.cem.doc/index.html">Cloud Event Management documentation</a></p>
+<p><img alt="" src="../images/mcm-monitoring-event-management/cem-subs1.png" /></p>
+<p>Example subscription <code>cem-1</code> on the picture above is the name of the ICP <code>Team</code> authorized to manage a cluster namespace.</p>
+<p>Click <code>Launch</code> and then on the <code>Incidents</code> tab. If some defined Prometheus alerts are active (you can verify it via Prometheus Alertmanager UI available from the ICP console <code>Platform -&gt; Alerting</code>), you should see those incidents in the CEM UI:</p>
+<p><img alt="" src="../images/mcm-monitoring-event-management/cem-incident.png" /></p>
+<p>Now click on one of the incidents to see the Prometheus alert details:</p>
+<p><img alt="" src="../images/mcm-monitoring-event-management/cem-event.png" /></p>
+<p>Click on the <code>Generator URL</code> link to open the Prometheus UI on the managed cluster and see the current result of the PromQL query that generated this alert:</p>
+<p><img alt="" src="../images/mcm-monitoring-event-management/cem-prom.png" /></p>
+<h2 id="conclusion">Conclusion</h2>
+<p><strong>IBM Cloud Event Management</strong> for <strong>IBM Multicloud Manager</strong> enables you to access Prometheus alert information for each of your managed clusters from a centralized location.</p>
+<p>To learn more about using and operating Cloud Event Management, check out the <a href="https://www.ibm.com/support/knowledgecenter/SSURRN/com.ibm.cem.doc/index.html">Cloud Event Management documentation</a>.</p>
               
             </div>
           </div>

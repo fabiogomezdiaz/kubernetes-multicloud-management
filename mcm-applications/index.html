@@ -185,15 +185,15 @@
 </ul>
 <p>The above 3 services were converted into the following 3 Helm Charts for the purpose of this demo. You can find the source code for the Helm Charts here:</p>
 <ul>
-<li><strong>Redis Master</strong>: <a href="https://github.com/ibm-cloud-architecture/kubernetes-multicloud-management/tree/v312/cookbook/docs/demos/guestbook/gbapp/gbrm">gbrm</a>.</li>
-<li><strong>Redis Slave</strong>: <a href="https://github.com/ibm-cloud-architecture/kubernetes-multicloud-management/tree/v312/cookbook/docs/demos/guestbook/gbapp/gbrs">gbrs</a>.</li>
-<li><strong>Frontend</strong>: <a href="https://github.com/ibm-cloud-architecture/kubernetes-multicloud-management/tree/v312/cookbook/docs/demos/guestbook/gbapp/gbf">gbf</a>.</li>
+<li><strong>Redis Master</strong>: <a href="https://github.com/ibm-cloud-architecture/kubernetes-multicloud-management/tree/v312/demos/guestbook/gbapp/gbrm">gbrm</a>.</li>
+<li><strong>Redis Slave</strong>: <a href="https://github.com/ibm-cloud-architecture/kubernetes-multicloud-management/tree/v312/demos/guestbook/gbapp/gbrs">gbrs</a>.</li>
+<li><strong>Frontend</strong>: <a href="https://github.com/ibm-cloud-architecture/kubernetes-multicloud-management/tree/v312/demos/guestbook/gbapp/gbf">gbf</a>.</li>
 </ul>
 <p>Lastly, in order to deploy the above charts through MCM, we are also going to need a Helm chart that deploys all of the MCM resources. Those resources do the actual deployment, monitoring, and topology setup for the 3 Helm Charts mentioned above.</p>
 <p>In the next sections, you are going to explore parts of the source code that make the <code>gbapp</code> Helm Chart (the chart with the MCM Resources) to understand the process of creating an <code>Multicloud Manager Application</code>.</p>
 <p><strong>NOTE</strong>: To checkout the entire source code of the <code>gbapp</code> Helm Chart, checkout the link below:</p>
 <ul>
-<li><a href="https://github.com/ibm-cloud-architecture/kubernetes-multicloud-management/tree/v312/cookbook/docs/demos/guestbook/gbapp">cookbook/docs/demos/guestbook/gbapp</a></li>
+<li><a href="https://github.com/ibm-cloud-architecture/kubernetes-multicloud-management/tree/v312/demos/guestbook/gbapp">demos/guestbook/gbapp</a></li>
 </ul>
 <h3 id="application-resource">Application Resource</h3>
 <p>First things first, in order for MCM to recognize your workloads as an MCM application, you have to create an <code>Application</code> resource. The <code>Application</code> resource lets you specify criteria to associate Kubernetes resources to your application so that MCM can manage and monitor them. Let's look at the <code>gbapp</code> Application resource from the Helm Chart below:</p>
@@ -384,10 +384,10 @@ subjects:
 <h3 id="mcm-application-helm-chart">MCM Application Helm Chart</h3>
 <p>The above YAML resources mostly cover supporting the <code>frontend</code> Helm Chart. To see how we put together an MCM Application Helm Chart that deploys all of the 3 Guestbook Helm Charts, checkout the source code at the link below:</p>
 <ul>
-<li><a href="https://github.com/ibm-cloud-architecture/kubernetes-multicloud-management/tree/v312/cookbook/docs/demos/guestbook/gbapp">cookbook/docs/demos/guestbook/gbapp</a></li>
+<li><a href="https://github.com/ibm-cloud-architecture/kubernetes-multicloud-management/tree/v312/demos/guestbook/gbapp">demos/guestbook/gbapp</a></li>
 </ul>
 <h2 id="deployment-mcm-application">Deployment MCM Application</h2>
-<p>Now that you are aware of how to create MCM Applications, it is time to deploy the <code>gbapp</code> MCM Application Helm Chart, which deploys the Guestbook Frontend (<a href="https://github.com/ibm-cloud-architecture/kubernetes-multicloud-management/tree/v312/cookbook/docs/demos/guestbook/gbapp/gbf">gbf</a>), Redis Master (<a href="https://github.com/ibm-cloud-architecture/kubernetes-multicloud-management/tree/v312/cookbook/docs/demos/guestbook/gbapp/gbrm">gbrm</a>), and Redis Slave (<a href="https://github.com/ibm-cloud-architecture/kubernetes-multicloud-management/tree/v312/cookbook/docs/demos/guestbook/gbapp/gbrs">gbrs</a>) charts.</p>
+<p>Now that you are aware of how to create MCM Applications, it is time to deploy the <code>gbapp</code> MCM Application Helm Chart, which deploys the Guestbook Frontend (<a href="https://github.com/ibm-cloud-architecture/kubernetes-multicloud-management/tree/v312/demos/guestbook/gbapp/gbf">gbf</a>), Redis Master (<a href="https://github.com/ibm-cloud-architecture/kubernetes-multicloud-management/tree/v312/demos/guestbook/gbapp/gbrm">gbrm</a>), and Redis Slave (<a href="https://github.com/ibm-cloud-architecture/kubernetes-multicloud-management/tree/v312/demos/guestbook/gbapp/gbrs">gbrs</a>) charts.</p>
 <p>Before you start with the examples, you will need to clone the code and log into the MCM Hub Cluster with the commands below:</p>
 <pre><code class="bash"># Clone the Repository
 git clone https://github.com/ibm-cloud-architecture/kubernetes-multicloud-management.git
@@ -404,10 +404,10 @@ git clone https://github.com/ibm-cloud-architecture/kubernetes-multicloud-manage
 cloudctl login -a https://ICP_MASTER_IP:8443 -n default --skip-ssl-validation
 
 # Go to Helm Charts directory
-cd cookbook/docs/demos/guestbook
+cd demos/guestbook
 
 # Create the Image Policy in the ICP Cluster
-kubectl apply -f cookbook/docs/demos/guestbook/guestbook-cluster-image-policy.yaml
+kubectl apply -f demos/guestbook/guestbook-cluster-image-policy.yaml
 </code></pre>
 
 <p>Don't forget to run the above commands on <code>EACH ICP Cluster</code> so that there are no issues when deploying the <code>gbapp</code> application.</p>
@@ -417,7 +417,7 @@ kubectl apply -f cookbook/docs/demos/guestbook/guestbook-cluster-image-policy.ya
 cloudctl login -a https://HUB_CLUSTER_MASTER_IP:8443 -n default --skip-ssl-validation
 
 # If not already there, go to the Helm Charts directory
-cd cookbook/docs/demos/guestbook
+cd demos/guestbook
 
 # Deploy MCM Application Helm Chart
 helm upgrade --install guestbook --set replicaCount=1 --set targetCluster.labelSelector.matchLabels.environment=Dev ./gbapp --tls
@@ -427,7 +427,7 @@ helm upgrade --install guestbook --set replicaCount=1 --set targetCluster.labelS
 <ul>
 <li><strong>replicaCount</strong>: is a field that indicates the number of application instances we are deploying, which is 1.</li>
 <li><strong>targetCluster.labelSelector.matchLabels.environment</strong>: means we are using the <code>environment</code> field with a value of <code>Dev</code>, which tells the MCM Controller to should find a cluster that has that value for that field.<ul>
-<li>Checkout the <a href="https://github.com/ibm-cloud-architecture/kubernetes-multicloud-management/tree/v312/cookbook/docs/demos/guestbook/gbapp/values.yaml#L7">cookbook/docs/demos/guestbook/gbapp/values.yaml</a> to learn the different fields we can use as cluster selectors.</li>
+<li>Checkout the <a href="https://github.com/ibm-cloud-architecture/kubernetes-multicloud-management/tree/v312/demos/guestbook/gbapp/values.yaml#L7">demos/guestbook/gbapp/values.yaml</a> to learn the different fields we can use as cluster selectors.</li>
 </ul>
 </li>
 </ul>
@@ -454,7 +454,7 @@ helm upgrade --install guestbook --set replicaCount=1 --set targetCluster.labelS
 <h3 id="3-redeploy-to-staging-cluster">3. Redeploy to Staging Cluster</h3>
 <p>To redeploy the application to the <code>se-stg-31</code> cluster, all we have to do is change the value of the <code>environment</code> field to <code>Staging</code>, and MCM will take care of uninstalling the application from the <code>se-dev-31</code> cluster and then redeploying it to the <code>se-stg-31</code> cluster. To do so, run the command below:</p>
 <pre><code class="bash"># If not already there, go to the Helm Charts directory
-cd cookbook/docs/demos/guestbook
+cd demos/guestbook
 
 # Deploy MCM Application Helm Chart
 helm upgrade --install guestbook --set replicaCount=1 --set targetCluster.labelSelector.matchLabels.environment=Staging ./gbapp --tls
@@ -465,7 +465,7 @@ helm upgrade --install guestbook --set replicaCount=1 --set targetCluster.labelS
 <h3 id="4-redeploy-to-both-clusters">4. Redeploy to Both Clusters</h3>
 <p>Now let's go ahead and deploy the application to both clusters simultaneously! To do so, we will have to use a different label of which value is shared by both clusters. Both <code>se-dev-31</code> and <code>se-stg-31</code> clusters actually share the value of <code>case</code> for the label <code>owner</code>, so we will use that for the deployment. The last thing that remains is to increase the value of <code>replicaCount</code> from <code>1</code> to <code>2</code> in order for MCM to know that it needs to install the application on two clusters that match label values. To install the application on both clusters, run the command below:</p>
 <pre><code class="bash"># If not already there, go to the Helm Charts directory
-cd cookbook/docs/demos/guestbook
+cd demos/guestbook
 
 # Deploy MCM Application Helm Chart
 helm upgrade --install guestbook --set replicaCount=2 --set targetCluster.labelSelector.matchLabels.owner=case ./gbapp --tls
