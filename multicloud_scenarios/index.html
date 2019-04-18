@@ -8,7 +8,7 @@
   
   
   <link rel="shortcut icon" href="../img/favicon.ico">
-  <title>Scenarios for multi-cluster management - Cookbook for managing Kuberenetes clusters with IBM Multicloud Manager</title>
+  <title>Scenarios for Multi-cluster Management - Cookbook for managing Kuberenetes clusters with IBM Multicloud Manager</title>
   <link href='https://fonts.googleapis.com/css?family=Lato:400,700|Roboto+Slab:400,700|Inconsolata:400,700' rel='stylesheet' type='text/css'>
 
   <link rel="stylesheet" href="../css/theme.css" type="text/css" />
@@ -18,7 +18,7 @@
   
   <script>
     // Current page data
-    var mkdocs_page_name = "Scenarios for multi-cluster management";
+    var mkdocs_page_name = "Scenarios for Multi-cluster Management";
     var mkdocs_page_input_path = "multicloud_scenarios.md";
     var mkdocs_page_url = null;
   </script>
@@ -56,22 +56,26 @@
           
             <li class="toctree-l1 current">
 		
-    <a class="current" href="./">Scenarios for multi-cluster management</a>
+    <a class="current" href="./">Scenarios for Multi-cluster Management</a>
     <ul class="subnav">
             
-    <li class="toctree-l2"><a href="#the-era-of-multicloud">The era of Multicloud</a></li>
+    <li class="toctree-l2"><a href="#scenarios-for-multi-cluster-management">Scenarios for Multi-cluster Management</a></li>
     
-
-    <li class="toctree-l2"><a href="#the-client-story">The Client Story</a></li>
-    
-
-    <li class="toctree-l2"><a href="#cross-cluster-visibility">Cross-cluster visibility</a></li>
-    
-
-    <li class="toctree-l2"><a href="#workload-deployment-and-placement">Workload deployment and placement</a></li>
-    
-
-    <li class="toctree-l2"><a href="#compliance-and-security">Compliance and Security</a></li>
+        <ul>
+        
+            <li><a class="toctree-l3" href="#the-era-of-multicloud">The Era of Multicloud</a></li>
+        
+            <li><a class="toctree-l3" href="#the-client-story">The Client Story</a></li>
+        
+            <li><a class="toctree-l3" href="#cross-cluster-visibility">Cross-cluster Visibility</a></li>
+        
+            <li><a class="toctree-l3" href="#workload-deployment-and-placement">Workload Deployment and Placement</a></li>
+        
+            <li><a class="toctree-l3" href="#compliance-and-security">Compliance and Security</a></li>
+        
+            <li><a class="toctree-l3" href="#conclusion">Conclusion</a></li>
+        
+        </ul>
     
 
     </ul>
@@ -134,7 +138,7 @@
     
       
     
-    <li>Scenarios for multi-cluster management</li>
+    <li>Scenarios for Multi-cluster Management</li>
     <li class="wy-breadcrumbs-aside">
       
     </li>
@@ -144,7 +148,8 @@
           <div role="main">
             <div class="section">
               
-                <h2 id="the-era-of-multicloud">The era of Multicloud</h2>
+                <h1 id="scenarios-for-multi-cluster-management">Scenarios for Multi-cluster Management</h1>
+<h2 id="the-era-of-multicloud">The Era of Multicloud</h2>
 <p>Author: Gang Chen (gangchen@us.ibm.com)</p>
 <p>We are in a Multicloud arena with 8 out of 10 enterprises committing to multicloud and 71% use three or more cloud providers. Embracing Multicloud will be the end game. IBM Multicloud Manager is the enterprise-grade multicloud management solution for Kubernetes.</p>
 <p>Many enterprises deploy multiple Kubernetes clusters on premises and in the public cloud, such as IBM Cloud™, Amazon Web Services (AWS), and Azure. You might find yourself using different vendor-supported Kubernetes releases, including IBM Cloud Private, Red Hat® OpenShift®, IBM Cloud Kubernetes Service, Amazon EKS, and Azure AKS. As each cloud provider or Kubernetes solution comes with its own tools and operations, managing a Multicloud Kubernetes environment can be overwhelming.</p>
@@ -164,71 +169,73 @@
 <li>Security is the top priority of the adoption</li>
 </ul>
 <p>acmeAir has many isolated Kubernetes clusters dedicated for different development teams and business unit (LoB). For example, they are running web and mobile consumer facing sites for the acmeair.com on IBM Cloud Private (ICP) on on-prem datacenter and ICP on AWS. While the airline booking API service is running on IBM Cloud Kubernetes Service (IKS) and ICP on AWS.</p>
-<p>Even within the Booking API project, there are multiple Kubernetes (IKS and ICP) clusters that separate the Dev/QA from Staging/Production environment. And for High availability and Disaster Recovery consideration, acmeAir plans to deploy the production clusters in multiple cloud providers (regions). In summary, they end up having more than 12 clusters to support the various project. Adding other LoB, the number grows.</p>
+<p>Even within the Booking API project, there are multiple Kubernetes (IKS and ICP) clusters that separate the Dev/QA from Staging/Production environment. And for High availability and Disaster Recovery consideration, acmeAir plans to deploy the production clusters in multiple cloud providers (regions). In summary, they end up having more than 12 clusters to support the various project. By adding other LoBs, the number grows.</p>
 <p>What are Ops/SRE/Devops engineers doing with these clusters now (As-Is with or without MCM):</p>
 <ul>
-<li>Single consolidated view of all the clusters for corporate Ops team</li>
-<li>Patch and upgrade many clusters and components</li>
-<li>A single DevOps pipeline will build Microservices app and deployment them as builds and promote through the environment (Dev -&gt; QA -&gt; staging -&gt; Prod)</li>
-<li>Token Rotation. every 30 days, access tokens stored in secrets will need to be rotated in every environment and updated in CICD build tools</li>
-<li>Ops/DevOps engineer has to ensure secrets and ConfigMaps synchronization in every cluster</li>
-<li>The acmeair.com site clusters contains customer PCI data that needs to ensure compliance in staging/prod clusters</li>
-<li>the booking API engine needs to handle the workload bursting situation to scale up a new auto-provisioned ICP cluster on public Cloud IaaS</li>
+<li>Single consolidated view of all the clusters for corporate Ops team.</li>
+<li>Patch and upgrade many clusters and components.</li>
+<li>A single DevOps pipeline will build Microservices app and deployment them as builds and promote through the environment (Dev -&gt; QA -&gt; Staging -&gt; Prod).</li>
+<li>Token Rotation. Every 30 days, access tokens stored in secrets will need to be rotated in every environment and updated in CICD build tools.</li>
+<li>Ops/DevOps engineer has to enforce Secrets and ConfigMaps synchronization in every cluster.</li>
+<li>The acmeair.com site clusters contains customer PCI data that needs to ensure compliance in staging/prod clusters.</li>
+<li>The booking API engine needs to handle the workload bursting situation to scale up a new auto-provisioned ICP cluster on public Cloud IaaS.</li>
 <li>Ops team is looking for a tool to manage multiple clusters from a single location including dashboards, command &amp; control, deployments.</li>
 <li>Ops team needs to keep things in sync across clusters, so need to create/update objects only once - teams, helm catalogs used by teams etc. </li>
-<li>Ops/DevOps wants single action ( anything from hamburger menu in the console) to execute for a set of clusters </li>
+<li>Ops/DevOps wants single action (anything from hamburger menu in the console) to execute for a set of clusters.</li>
 </ul>
 <p>This list gives you a big picture of the issues when dealing with multiple Kubernetes clusters.</p>
-<h2 id="cross-cluster-visibility">Cross-cluster visibility</h2>
-<p><strong> User Story (client needs): </strong></p>
-<p>More and more clients adopt multiple-cloud strategy where they will host and operate multiple Kubernetes clusters across multiple cloud IaaS environment (including on-prem). Operators need a single management interface and utility to manage all these clusters with secure access. Operators can easily get health status of all the clusters managed including overall health condition, the key resource usage information. This function should be delivered through both a UI and cli utility. Operators can easily add, remove and update label of a cluster being managed.</p>
-<p><strong> MCM capability </strong></p>
-<p>The current release of MCM provides the following feature in cluster inventory:</p>
+<h2 id="cross-cluster-visibility">Cross-cluster Visibility</h2>
+<p><strong> User Story (Client needs): </strong></p>
+<p>More and more clients adopt multiple-cloud strategy where they will host and operate multiple Kubernetes clusters across multiple cloud IaaS environment (including on-prem). Operators need a single management interface and utility to manage all these clusters with secure access. Operators can easily get health status of all the clusters managed including overall health condition, the key resource usage information. This function should be delivered through both a UI and CLI utility. Operators can easily add, remove and update the labels of a managed cluster.</p>
+<p><strong> MCM Capability </strong></p>
+<p>The current release of MCM provides the following features in cluster inventory:</p>
 <ul>
-<li>Single view of all the clusters managed</li>
-<li>Query/search based on cluster label</li>
-<li>View health of all the clusters in a given region</li>
-<li>Know how many nodes are down in all the clusters</li>
-<li>View the pods in the a given namespace in all development clusters</li>
-<li>View (read only) the health status of pods, nodes, persistent volumes and applications running in those clusters</li>
-<li>Available through ICP Console UI and <code>mcmctl</code> cli</li>
+<li>View all the managed clusters from a central location.</li>
+<li>Query/search clusters and Kubernetes resources based on cluster labels.</li>
+<li>View the health of all the clusters in a given region.</li>
+<li>Know how many nodes are down in all the clusters.</li>
+<li>View the pods in a given namespace in all development clusters.</li>
+<li>View (read only) the health status of pods, nodes, persistent volumes and applications running in those clusters.</li>
 </ul>
-<h2 id="workload-deployment-and-placement">Workload deployment and placement</h2>
+<h2 id="workload-deployment-and-placement">Workload Deployment and Placement</h2>
 <p><strong> User Story (client needs): </strong></p>
-<p>Developers and Operators may want to deploy workloads (Cloud-Native apps, App modernization packages) to multiple clusters. For example, Developers or DevOps engineer would like to deploy the application Helm Chart to Dev cluster environment, and later promote it to QA environment. Both through a single Catalog UI or cli utility. The Operators often deploy workload to multiple clusters as well. In our acmeAir example, production workload needs to be deployed to 2 cloud provider clusters and ensure the consistency of the application.</p>
-<p>Users would like to embed the multi-cluster support capability in their existing CI/CD DevOps pipeline. So, they don't have to manage and update the different endpoint, access token and artifact repo (Helm repo) for each cluster.</p>
-<p>Sometimes, developer and operator may need to deploy and manage the workload in a higher abstract format where several modules/Helm charts are grouped as deployment unit with dependency and other relationship built in. Particularly, when some of the dependent components may end up in different clusters. The capability to have an abstract Application component spanning cross multiple cluster becomes every helpful.</p>
-<p><strong> MCM capability </strong></p>
+<p>Developers and Operators may want to deploy workloads (Cloud-Native apps, App modernization packages) to multiple clusters. For example, Developers or DevOps engineer would like to deploy the application Helm Chart to Dev cluster environment, and later promote it to QA environment, both through a single Catalog UI or CLI utility. The Operators often deploy workload to multiple clusters as well. In our acmeAir example, production workload needs to be deployed to 2 cloud provider clusters and ensure the consistency of the application.</p>
+<p>Users would like to embed the multi-cluster support capability in their existing CI/CD DevOps pipeline. That way, they don't have to manage and update the different endpoint, access token and artifact repo (Helm repo) for each cluster.</p>
+<p>Sometimes, developers and operators may need to deploy and manage the workload in a higher abstract format where several modules/Helm charts are grouped as deployment unit with dependency and other relationship built-in. Particularly, when some of the dependent components may end up in different clusters, the capability to have an abstract Application component spanning cross multiple cluster becomes very helpful.</p>
+<p><strong> MCM Capability </strong></p>
 <ul>
-<li>Abstract Application component. This defines the representation of the resource common across clusters. This part is similar to <a href="https://github.com/kubernetes-sigs/federation-v2">Kubernetes Federation V2</a> feature. MCM has more exposure in dependency management capability. As well as reflect the relationship in a visual <code>topology</code> format.</li>
-<li>Component placement. More information will be addressed in below section. In general, MCM can place a workload to different clusters/namespaces based on a set of selector and criteria. This can be powerful in multiple clusters scenario. For example, solving the request from Air Canada, Telus.</li>
-<li>MCM cli integration with CI/CD pipeline.</li>
-<li>Managed cross cluster Helm Repo</li>
-<li>Local or Remote Helm chart deployment through multi-cluster catalog or cli.</li>
+<li>Abstract Application component. This defines the representation of the common resource across clusters. This part is similar to <a href="https://github.com/kubernetes-sigs/federation-v2">Kubernetes Federation V2</a> feature. MCM has more exposure in dependency management capability. As well as reflect the relationship in a visual <code>topology</code> format.</li>
+<li>Component placement. More information will be addressed in below section. In general, MCM can place a workload on different clusters/namespaces based on a set of selectors and criteria. This can be powerful in a multiple-clusters scenario. For example, solving the request from Air Canada, Telus.</li>
+<li>MCM CLI integration with CI/CD pipeline.</li>
+<li>Managed cross-cluster Helm repository.</li>
+<li>Local or Remote Helm chart deployment through multi-cluster catalog or CLI.</li>
 </ul>
 <p><strong> Features/Gaps </strong></p>
 <ul>
-<li>Package and creating MCM Application is a manual process requiring knowledge of the MCM application schema. A scaffolding tool could be very help to package components into MCM application.</li>
-<li>Integrating with existing CI/CD toolchain seems rudimentary at cli level. Considering some common plugins like MCM plugin for Jenkin etc..</li>
+<li>Package and creating MCM Application is a manual process requiring knowledge of the MCM application schema. A scaffolding tool could be very helpful to package components into MCM application.</li>
+<li>Integrating with existing CI/CD toolchain seems rudimentary at CLI level. Perhaps a dedicated MCM plugin for Jenkins can prove useful.</li>
 </ul>
 <h2 id="compliance-and-security">Compliance and Security</h2>
-<p>This feature is meant to address the requests:</p>
+<p>This feature is meant to address the following requests:</p>
 <ul>
 <li>How do I set consistent security policies across environments?</li>
 <li>Which clusters are compliant?</li>
-<li>How can I place workloads based on capacity, policy?</li>
-<li>How can I ensure all the clusters are configured properly based on their desired state.</li>
+<li>How can I place workloads based on capacity and/or policy?</li>
+<li>How can I ensure that all the clusters are configured properly based on their desired state.</li>
 </ul>
 <p><strong> User Story </strong></p>
-<p>Operators need to ensure that clusters are operating properly by comparing the current configuration of various resources against a desired state. And operator would like to enforce role or pod object placement within the clusters through a set of policy templates.</p>
+<p>Operators need to ensure that the clusters are operating properly by comparing the current configuration of various resources against a desired state. And operator would like to enforce role or pod object placement within the clusters through a set of policy templates.</p>
 <p>Let's use some examples to walk through the user story.
-  The acmeair.com site will be deployed to both IBM Cloud and AWS. However, only IBM Cloud is certified by the company as PCI compliance given customer payment information will be stored in the system. Thus, the policy needs to enforce the payment services can only run on Kuberentes clusters hosted in IBM Cloud.</p>
-<p>Another example is associated with Workload deployment explained in above section. acmeair.com is planning to rollout a new feature. But would like to deploy first only to development and QA environment to pass various tests. DevOps engineers can simply tag the Application placement policy to cluster selector of DEV and QA in stead of configuring the CI/CD pipleine to handle the cluster enforcement.</p>
+The acmeair.com site will be deployed to both IBM Cloud and AWS. However, only IBM Cloud is certified by the company as PCI compliant given customer payment information will be stored in the system. Thus, the policy needs to enforce the payment services can only run on Kuberentes clusters hosted in IBM Cloud.</p>
+<p>Another example is associated with Workload deployment explained in above section. acmeair.com is planning to roll out a new feature, but they would like it to be first deployed in Dev and QA environments to run various tests. Instead of manually configuring the CI/CD pipelines with the Dev and QA environment credentials to do the deployment, DevOps engineers can simply update the MCM Application Placement Policy (explained in <a href="../mcm-applications/">MCM Applications chapter</a>) with the cluster selector labels of the Dev and QA environments and MCM will take of finding the Dev and QA environments (based on the provided labels) and deploy the feature on those clusters.</p>
 <p><strong> MCM capability </strong></p>
 <ul>
-<li>Set and enforce polices for Security, Applications, infrastructure ( Auto enforcement at cluster level)</li>
-<li>Check compliance against deployment parameters, configuration and policies</li>
+<li>Set and enforce polices for Security, Applications and Infrastructure (Auto enforcement at cluster level).</li>
+<li>Check compliance against deployment parameters, configuration and policies.</li>
 </ul>
+<h2 id="conclusion">Conclusion</h2>
+<p>Multicloud is the way the industry is going right now. However, the management of multiple Kubernetes clusters across multiple cloud providers is no easy feat, as shown in the user stories above. IBM Multicloud Manager takes care of the needs in these user stories and places itself as the central location to manage Kubernetes clusters across multiple cloud providers and their workloads.</p>
+<p>To get started learning and using MCM, checkout the <a href="../quickstart/">Quick Start</a> and <a href="../mcm-applications/">MCM Applications</a> chapters.</p>
               
             </div>
           </div>
