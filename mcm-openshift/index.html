@@ -168,30 +168,30 @@ If you want a TL;DR; version of this document, feel free to watch this video, wh
 <p><img alt="ICP on RHOS Architecture" src="../images/mcm-openshift/1-mcm-icp-rhos.png" /></p>
 <p>Here is a breakdown of the architecture we will attempt to replicate and use in this document:</p>
 <ul>
-<li>1 x <a href="https://www.ibm.com/support/knowledgecenter/en/SSBS6K_3.1.1/kc_welcome_containers.html">IBM Cloud Private</a> cluster, which will serve as the <code>MCM Controller</code> to manage itself and another cluster with the help of the <code>MCM Klusterlet</code>.</li>
-<li>1 x <a href="https://www.ibm.com/support/knowledgecenter/en/SSBS6K_3.1.1/supported_environments/openshift/overview.html">IBM Cloud Private on OpenShift</a> cluster, which will be managed by the cluster above via the <code>MCM Klusterlet</code>.</li>
+<li>1 x <a href="https://www.ibm.com/support/knowledgecenter/en/SSBS6K_3.1.2/kc_welcome_containers.html">IBM Cloud Private</a> cluster, which will serve as the <code>MCM Controller</code> to manage itself and another cluster with the help of the <code>MCM Klusterlet</code>.</li>
+<li>1 x <a href="https://www.ibm.com/support/knowledgecenter/en/SSBS6K_3.1.2/supported_environments/openshift/overview.html">IBM Cloud Private on OpenShift</a> cluster, which will be managed by the cluster above via the <code>MCM Klusterlet</code>.</li>
 <li>1 x <a href="https://jenkins.io/">Jenkins</a> instance running from inside the first cluster, which will run a CI/CD pipeline defined in a Git repository.</li>
 </ul>
 <h2 id="pre-requisites">Pre-Requisites</h2>
 <p>In order to go through this document, you are going to need the following:</p>
 <ul>
-<li>1 x <a href="https://www.ibm.com/support/knowledgecenter/en/SSBS6K_3.1.1/kc_welcome_containers.html">IBM Cloud Private</a> cluster.</li>
-<li>1 x <a href="https://www.ibm.com/support/knowledgecenter/en/SSBS6K_3.1.1/supported_environments/openshift/overview.html">IBM Cloud Private on OpenShift</a> cluster.</li>
+<li>1 x <a href="https://www.ibm.com/support/knowledgecenter/en/SSBS6K_3.1.2/kc_welcome_containers.html">IBM Cloud Private</a> cluster.</li>
+<li>1 x <a href="https://www.ibm.com/support/knowledgecenter/en/SSBS6K_3.1.2/supported_environments/openshift/overview.html">IBM Cloud Private on OpenShift</a> cluster.</li>
 <li><a href="https://kubernetes.io/docs/user-guide/kubectl-overview/">Kubectl</a> (Kubernetes CLI)<ul>
 <li>Follow the instructions <a href="https://kubernetes.io/docs/tasks/tools/install-kubectl/">here</a> to install it on your platform.</li>
 </ul>
 </li>
 <li><a href="https://github.com/kubernetes/helm">ICP Helm</a> (Kubernetes package manager)<ul>
-<li>Follow the instructions <a href="https://www.ibm.com/support/knowledgecenter/en/SSBS6K_3.1.0/app_center/create_helm_cli.html">here</a> to install it on your platform.</li>
+<li>Follow the instructions <a href="https://www.ibm.com/support/knowledgecenter/en/SSBS6K_3.1.2/app_center/create_helm_cli.html">here</a> to install it on your platform.</li>
+</ul>
+</li>
 <li><strong>Note</strong>: It is important to use ICP provided Helm for Chart Management on ICP 3.1.</li>
+<li><a href="https://www.ibm.com/support/knowledgecenter/en/SSBS6K_3.1.2/manage_cluster/icp_cli.html">IBM Cloud Private CLI</a><ul>
+<li>Follow the instructions <a href="https://www.ibm.com/support/knowledgecenter/en/SSBS6K_3.1.2/manage_cluster/install_cli.html">here</a> to install it on your platform.</li>
 </ul>
 </li>
-<li><a href="https://www.ibm.com/support/knowledgecenter/en/SSBS6K_3.1.0/mandrive.google.coage_cluster/icp_cli.html">IBM Cloud Private CLI</a><ul>
-<li>Follow the instructions <a href="https://www.ibm.com/support/knowledgecenter/en/SSBS6K_3.1.0/manage_cluster/install_cli.html">here</a> to install it on your platform.</li>
-</ul>
-</li>
-<li><a href="https://www.ibm.com/support/knowledgecenter/en/SSBS6K_3.1.1/mcm/installing/install.html#install_cli">MCM CLI</a><ul>
-<li>Follow the instructions <a href="https://www.ibm.com/support/knowledgecenter/en/SSBS6K_3.1.1/mcm/installing/install.html#install_cli">here</a> to install it on your platform.</li>
+<li><a href="https://www.ibm.com/support/knowledgecenter/en/SSBS6K_3.1.2/mcm/installing/install.html#install_cli">MCM CLI</a><ul>
+<li>Follow the instructions <a href="https://www.ibm.com/support/knowledgecenter/en/SSBS6K_3.1.2/mcm/installing/install.html#install_cli">here</a> to install it on your platform.</li>
 </ul>
 </li>
 </ul>
@@ -199,7 +199,7 @@ If you want a TL;DR; version of this document, feel free to watch this video, wh
 <h2 id="1-mcm-controller-and-klusterlet-cluster-preparation">1. MCM Controller and Klusterlet Cluster Preparation</h2>
 <p>The first cluster will be the <code>MCM Controller</code>, which means that this cluster will be able to manage other clusters, itself included. In order for this cluster to become the MCM Controller and manage itself, we will need to install both the <code>MCM Controller</code> and the <code>MCM Klusterlet</code> Helm Charts. The MCM Controller is in charge of monitoring and send commands to all clusters. The <code>MCM Klusterlet</code> is responsible for reporting status back to the MCM Controller and implementing its instructions.</p>
 <ul>
-<li>Follow these <a href="https://www.ibm.com/support/knowledgecenter/en/SSBS6K_3.1.1/mcm/installing/install.html">instructions</a> to install the MCM Controller and the MCM Klusterlet.</li>
+<li>Follow these <a href="https://www.ibm.com/support/knowledgecenter/en/SSBS6K_3.1.2/mcm/installing/install.html">instructions</a> to install the MCM Controller and the MCM Klusterlet.</li>
 <li>In the Klusterlet section, for <strong>Cluster Name</strong> field enter <code>se-dev-31</code>.</li>
 <li>Make sure to use these labels and values for this cluster:<ul>
 <li><strong>cloud</strong>: IBM</li>
@@ -215,7 +215,7 @@ If you want a TL;DR; version of this document, feel free to watch this video, wh
 <h2 id="2-mcm-klusterlet-cluster-preparation">2. MCM Klusterlet Cluster Preparation</h2>
 <p>The second cluster will only contain the <code>MCM Klusterlet</code> that reports information back to the <code>MCM Controller</code> cluster.</p>
 <ul>
-<li>Follow these <a href="https://www.ibm.com/support/knowledgecenter/en/SSBS6K_3.1.1/mcm/installing/mcm_openshift.html">instructions</a> to install the MCM Klusterlet.</li>
+<li>Follow these <a href="https://www.ibm.com/support/knowledgecenter/en/SSBS6K_3.1.2/mcm/installing/mcm_openshift.html">instructions</a> to install the MCM Klusterlet.</li>
 <li>For <strong>Cluster Name</strong> field, enter <code>osedev-31</code>.</li>
 <li>Make sure to use these labels and values for this cluster:<ul>
 <li><strong>cloud</strong>: IBM</li>
@@ -243,9 +243,8 @@ git clone https://github.com/ibm-cloud-architecture/kubernetes-multicloud-manage
 # Go to application directory
 cd kubernetes-multicloud-management/demos/guestbook
 
-# Create image policy to allow docker images from any Docker Registry
-# NOT RECOMMENDED FOR PRODUCTION
-kubectl apply -f imagepolicy.yaml
+# # Create the Image Policy in the ICP Cluster
+kubectl apply -f guestbook-cluster-image-policy.yaml
 
 # Install the Guestbook application on both clusters using the &quot;owner&quot; selector
 #   with a value of &quot;case&quot; This value was used when installing the MCM Klusterlets.
@@ -281,31 +280,23 @@ osedev-31   md-guestbook-gbapp-redisslave-osedev-31-gbrs    11h
 <p>You should be able to see the <code>guestbook-gbapp</code> application above, which means that the application was successfully registered in the MCM Controller. Now click on the application name to go to a more in-details view of the application. Feel free to explore all of the menus in this view, but if you scroll all the way down you will see the most important part of this view below:</p>
 <p><img alt="MCM Clusters" src="../images/mcm-openshift/4-mcm-console-application-details.png?raw=true" /></p>
 <p>The above shows the <code>Placement Policies</code>, which show the criteria used to deploy the application on multiple clusters. Pay attention to the fields and values for <strong>matchLabels</strong> under <strong>Cluster Selector</strong>. Do you recognize the <strong>owner</strong> field with a value of <code>case</code>? This is the same field that we passed along in the <code>helm upgrade</code> command.</p>
-<p>Also notice under the <strong>Deployable objects</strong> the <code>guestbook-gbapp</code>, <code>guestbook-gbapp-redismaster</code>, and the <code>guestbook-gbapp-redisslave</code> objects. Those are the <code>guestbook</code> helm charts that were deployed with the <code>gbapp</code> application chart.</p>
+<p><img alt="" src="../images/mcm-openshift/5-mcm-console-application-deployables.png" /></p>
+<p>Also notice under the <strong>Deployable Objects</strong> the <code>guestbook-gbapp</code>, <code>guestbook-gbapp-redismaster</code>, and the <code>guestbook-gbapp-redisslave</code> objects. Those are the <code>guestbook</code> helm charts that were deployed with the <code>gbapp</code> application chart.</p>
 <p>That's all you need to verify through MCM Console that the application was deployed to both clusters.</p>
 <h2 id="verifying-the-application-on-icp-on-openshift-console">Verifying the Application on ICP on OpenShift Console</h2>
 <p>Now that have deployed the application on the ICP on OpenShift cluster, let's verify the installation from the ICP on OpenShift console and test its functinality to make sure that everything works as expected. To access the ICP on OpenShift dashboard, open a new browser and go to <code>https://ICP_OPENSHIFT_MASTER_IP:5443/console/workloads/deployments</code> to see the existing deployments.</p>
-<p><img alt="MCM Clusters" src="../images/mcm-openshift/5-mcm-icp-openshift-console.png?raw=true" /></p>
-<p>If you are able to see the <code>md-guestbook-gbapp</code>, <code>md-guestbook-gbapp-redismaster</code>, and <code>md-guestbook-gbapp-redisslave</code> deployments and all have an <strong>Available</strong> value of <code>1</code>, then this means that all of the deployments have succesfully been deployed and started. You might need to search for <code>guestbook</code> and make sure the view is displaying deployments for all the namespaces to be able to see them.</p>
+<p><img alt="MCM Clusters" src="../images/mcm-openshift/6-mcm-icp-openshift-console.png?raw=true" /></p>
+<p>If you are able to see the <code>md-guestbook-gbapp-frontend</code>, <code>md-guestbook-gbapp-redismaster</code>, and <code>md-guestbook-gbapp-redisslave</code> deployments and all have an <strong>Available</strong> value of <code>1</code>, then this means that all of the deployments have succesfully been deployed and started. You might need to search for <code>guestbook</code> and make sure the view is displaying deployments for all the namespaces to be able to see them.</p>
 <p>To test the application itself, go ahead and click the <code>Launch</code> button at the end of the <code>md-guestbook-gbapp</code> row, which will open a new browser window to display the guestbook web application, as shown below.</p>
-<p><img alt="MCM Clusters" src="../images/mcm-openshift/6-application.png?raw=true" /></p>
+<p><img alt="MCM Clusters" src="../images/mcm-openshift/7-application.png?raw=true" /></p>
 <p>The guestbook application itself is very simple. It consists of a web application that saves <code>guest</code> names to a Redis deployment and persists them there even if the web application dies or restarts for some reason. To test its functionality, enter any text in the textbox shown above and click the <code>Submit</code> button. If everything worked successfully, you will see that the text you entered has now moved below the Submit button, which indicates that the text has been saved to and successfully read from the Redis deployment. To make sure that the text persists in the Redis deployment, feel free to refresh the page and make sure that the text you entered is bein shown again below the <code>Submit</code> button.</p>
 <p>If all the above was done successfully, that means that you have successfully verified the guestbook deployment and tested its functionality!</p>
 <h2 id="verifying-the-application-on-openshift-console">Verifying the Application on OpenShift Console</h2>
 <p>The last step that remains is to verify that the guestbook deployments are shown on the OpenShift console itself. To do that, open a new browser and go to <code>https://ICP_OPENSHIFT_MASTER_IP:8443/console/project/default/overview</code>, where <code>default</code> is the name of the OpenShift project (known as a namespace in ICP/Kubernetes terms).</p>
-<p><img alt="MCM Clusters" src="../images/mcm-openshift/7-openshift-console.png?raw=true" /></p>
+<p><img alt="MCM Clusters" src="../images/mcm-openshift/8-openshift-console.png?raw=true" /></p>
 <p>If you are able to see the <code>md-guestbook-gbapp</code>, <code>md-guestbook-gbapp-redismaster</code>, and <code>md-guestbook-gbapp-redisslave</code> deployments and all have at least <code>1</code> pod available, then this means that all of the deployments have succesfully been deployed and started. You might need to search for <code>guestbook</code> and make sure the view is displaying deployments for all the namespaces to be able to see them.</p>
 <h2 id="conclusion">Conclusion</h2>
-<p>If you were able to get through all the above, then that means that you have successfully done the following:</p>
-<ul>
-<li>Installed <code>MCM Controller</code> and <code>MCM Klusterlet</code> on an IBM Cloud Private cluster.</li>
-<li>Installed <code>MCM Klusterlet</code> on an <code>IBM Cloud Private on OpenShift</code> cluster.</li>
-<li>Verified that both clusters show on on MCM Controller.</li>
-<li>Installed the <code>guestbook</code> application on both clusters through MCM Controller via cluster selectors.</li>
-<li>Verified the <code>guestbook</code> application installation from <code>mcmctl</code>, MCM Controller Console, ICP on OpenShift Console, and the OpenShift Console.</li>
-<li>Verified the <code>guestbook</code> application funtionality.</li>
-</ul>
-<p>Congratulations, you now have the knowledge to use MCM to manage, monitor, and deploy applications IBM Cloud Private and IBM Cloud Private on OpenShift clusters!</p>
+<p>Now that you know how to use MCM to manage, monitor, and deploy applications on IBM Cloud Private and IBM Cloud Private on OpenShift clusters, you should checkout the <a href="../mcm-eks/">Manage AWS EKS clusters with MCM</a> to learn how to use MCM to manage, monitor, and deploy applications on AWS EKS clusters.</p>
               
             </div>
           </div>
