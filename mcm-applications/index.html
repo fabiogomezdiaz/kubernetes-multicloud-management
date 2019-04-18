@@ -8,7 +8,7 @@
   
   
   <link rel="shortcut icon" href="../img/favicon.ico">
-  <title>MCM Applications - Cookbook for managing Kuberenetes clusters with IBM Multicloud Manager</title>
+  <title>Create and Deploy Applications with MCM - Cookbook for managing Kuberenetes clusters with IBM Multicloud Manager</title>
   <link href='https://fonts.googleapis.com/css?family=Lato:400,700|Roboto+Slab:400,700|Inconsolata:400,700' rel='stylesheet' type='text/css'>
 
   <link rel="stylesheet" href="../css/theme.css" type="text/css" />
@@ -18,7 +18,7 @@
   
   <script>
     // Current page data
-    var mkdocs_page_name = "MCM Applications";
+    var mkdocs_page_name = "Create and Deploy Applications with MCM";
     var mkdocs_page_input_path = "mcm-applications.md";
     var mkdocs_page_url = null;
   </script>
@@ -56,20 +56,20 @@
           
             <li class="toctree-l1">
 		
-    <a class="" href="../multicloud_scenarios/">Scenarios for Multi-cluster Management</a>
+    <a class="" href="../mcm-multicloud-scenarios/">Scenarios for Multi-cluster Management</a>
 	    </li>
           
             <li class="toctree-l1">
 		
-    <a class="" href="../quickstart/">Quick Start</a>
+    <a class="" href="../mcm-quickstart/">Quick Start</a>
 	    </li>
           
             <li class="toctree-l1 current">
 		
-    <a class="current" href="./">MCM Applications</a>
+    <a class="current" href="./">Create and Deploy Applications with MCM</a>
     <ul class="subnav">
             
-    <li class="toctree-l2"><a href="#creating-and-deploying-mcm-applications">Creating and Deploying MCM Applications</a></li>
+    <li class="toctree-l2"><a href="#create-and-deploy-applications-with-mcm">Create and Deploy Applications with MCM</a></li>
     
         <ul>
         
@@ -89,27 +89,27 @@
           
             <li class="toctree-l1">
 		
-    <a class="" href="../mcm-devops/">DevOps with MCM</a>
+    <a class="" href="../mcm-devops/">DevOps in Multi-cluster Environment</a>
 	    </li>
           
             <li class="toctree-l1">
 		
-    <a class="" href="../policy/">Policy and Compliance</a>
+    <a class="" href="../mcm-compliance/">Create Multi-cluster Compliance Policies</a>
 	    </li>
           
             <li class="toctree-l1">
 		
-    <a class="" href="../mcm-monitoring-event-management/">Monitoring and event management with MCM</a>
+    <a class="" href="../mcm-monitoring-event-management/">Monitoring and Event Management with MCM</a>
 	    </li>
           
             <li class="toctree-l1">
 		
-    <a class="" href="../mcm-openshift/">Manage Red Hat OpenShift platform with MCM</a>
+    <a class="" href="../mcm-openshift/">Manage Red Hat OpenShift Clusters</a>
 	    </li>
           
             <li class="toctree-l1">
 		
-    <a class="" href="../mcm-eks/">Manage AWS EKS cluster with MCM</a>
+    <a class="" href="../mcm-eks/">Manage AWS EKS Clusters</a>
 	    </li>
           
         </ul>
@@ -134,7 +134,7 @@
     
       
     
-    <li>MCM Applications</li>
+    <li>Create and Deploy Applications with MCM</li>
     <li class="wy-breadcrumbs-aside">
       
     </li>
@@ -144,13 +144,13 @@
           <div role="main">
             <div class="section">
               
-                <h1 id="creating-and-deploying-mcm-applications">Creating and Deploying MCM Applications</h1>
+                <h1 id="create-and-deploy-applications-with-mcm">Create and Deploy Applications with MCM</h1>
 <p><strong>Author:</strong> Fabio Gomez (fabiogomez@us.ibm.com)</p>
 <p>In this document, we will go over the process of creating and deploying an MCM Application on multiple clusters using the Helm CLI against the MCM Hub Cluster.</p>
 <h2 id="pre-requisites">Pre-Requisites</h2>
 <ul>
 <li>2 x <a href="https://www.ibm.com/support/knowledgecenter/en/SSBS6K_3.1.2/kc_welcome_containers.html">IBM Cloud Private</a> Clusters with MCM Installed.<ul>
-<li>I recommend you go through the <a href="../quickstart/#installing-mcm"><code>Installing MCM</code></a> section of the <a href="../quickstart/">Quick Start</a> chapter.</li>
+<li>I recommend you go through the <a href="../mcm-quickstart/#installing-mcm"><code>Installing MCM</code></a> section of the <a href="../mcm-quickstart/">Quick Start</a> chapter.</li>
 </ul>
 </li>
 <li><a href="https://kubernetes.io/docs/user-guide/kubectl-overview/">Kubectl</a> (Kubernetes CLI)<ul>
@@ -167,10 +167,10 @@
 </li>
 </ul>
 <h2 id="creating-multicloud-manager-applications">Creating Multicloud Manager Applications</h2>
-<p>As explained in the <a href="../quickstart/#core-multicloud-manager-resources-to-learn"><code>Core Multicloud Manager Resources to Learn</code></a> section of the <a href="../quickstart/">Quick Start</a> chapter, an <code>Application</code> is a way to relate multiple workloads (Helm Charts) as a single unit. By implementing the custom MCM YAML resources, MCM can monitor your applications, automate their deployment to multiple clusters, and extract the topology of all its components, amongst other features. Though not immediately useful for developers, these capabilities makes the lives of operators easier by having a single place where they can deploy and monitor applications on multiple clusters.</p>
+<p>As explained in the <a href="../mcm-quickstart/#core-multicloud-manager-resources-to-learn"><code>Core Multicloud Manager Resources to Learn</code></a> section of the <a href="../mcm-quickstart/">Quick Start</a> chapter, an <code>Application</code> is a way to relate multiple workloads (Helm Charts) as a single unit. By implementing the custom MCM YAML resources, MCM can monitor your applications, automate their deployment to multiple clusters, and extract the topology of all its components, amongst other features. Though not immediately useful for developers, these capabilities makes the lives of operators easier by having a single place where they can deploy and monitor applications on multiple clusters.</p>
 <p>With the MCM Hub Cluster dashboard you can deploy a regular Helm Chart to multiple IBM Cloud Private (ICP) clusters, but that's the only benefit you get out of the box. To fully leverage MCM's deployment automation, monitoring, topology and its other capabilities, you will have to create custom MCM YAML resources that get deployed with your charts. Luckily, no changes need to be made to the original Helm Charts or their application code.</p>
 <h3 id="guestbook-helm-charts-introduced">Guestbook Helm Charts Introduced</h3>
-<p>In this document, we are going to cover the basic <code>Application</code> concepts we learned in <a href="../quickstart/#core-multicloud-manager-resources-to-learn"><code>Core Multicloud Manager Resources to Learn</code></a>, but we will be using the <code>Guestbook</code> MCM Application code as an example to deploy 3 separate charts (explained later) on multiple clusters.</p>
+<p>In this document, we are going to cover the basic <code>Application</code> concepts we learned in <a href="../mcm-quickstart/#core-multicloud-manager-resources-to-learn"><code>Core Multicloud Manager Resources to Learn</code></a>, but we will be using the <code>Guestbook</code> MCM Application code as an example to deploy 3 separate charts (explained later) on multiple clusters.</p>
 <p>The actual <code>Guestbook</code> application code comes from the Kubernetes Community, and it's located publicly on the <a href="https://github.com/kubernetes/examples/tree/master/guestbook">kubernetes/examples</a> repository. The application is broken up in the following 3 services:</p>
 <p><img alt="GuestBook Architecture" src="../images/mcm-applications/guestbook-architecture.png?raw=true" /></p>
 <ul>
@@ -346,7 +346,7 @@ spec:
 </ul>
 </li>
 <li><strong>spec.compliances</strong>: Contains a list of <code>Compliances</code> (outside of the scope of this chapter) resources to attach this policy to.<ul>
-<li>To learn about <code>Compliance</code> resources, checkout the <a href="../policy/">MCM Compliance Manager Chapter</a>.</li>
+<li>To learn about <code>Compliance</code> resources, checkout the <a href="../mcm-compliance/">Create Multi-cluster Compliance Policies Chapter</a>.</li>
 </ul>
 </li>
 </ul>
@@ -497,10 +497,10 @@ helm upgrade --install guestbook --set replicaCount=2 --set targetCluster.labelS
   
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
       
-        <a href="../mcm-devops/" class="btn btn-neutral float-right" title="DevOps with MCM">Next <span class="icon icon-circle-arrow-right"></span></a>
+        <a href="../mcm-devops/" class="btn btn-neutral float-right" title="DevOps in Multi-cluster Environment">Next <span class="icon icon-circle-arrow-right"></span></a>
       
       
-        <a href="../quickstart/" class="btn btn-neutral" title="Quick Start"><span class="icon icon-circle-arrow-left"></span> Previous</a>
+        <a href="../mcm-quickstart/" class="btn btn-neutral" title="Quick Start"><span class="icon icon-circle-arrow-left"></span> Previous</a>
       
     </div>
   
@@ -526,7 +526,7 @@ helm upgrade --install guestbook --set replicaCount=2 --set targetCluster.labelS
     <span class="rst-current-version" data-toggle="rst-current-version">
       
       
-        <span><a href="../quickstart/" style="color: #fcfcfc;">&laquo; Previous</a></span>
+        <span><a href="../mcm-quickstart/" style="color: #fcfcfc;">&laquo; Previous</a></span>
       
       
         <span style="margin-left: 15px"><a href="../mcm-devops/" style="color: #fcfcfc">Next &raquo;</a></span>
